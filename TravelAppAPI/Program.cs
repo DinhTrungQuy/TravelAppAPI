@@ -12,6 +12,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<TravelAppDatabaseSettings>(
     builder.Configuration.GetSection("TravelAppDatabase"));
 builder.Services.AddSingleton<PlaceServices>();
+builder.Services.AddSingleton<AuthServices>();
+builder.Services.AddSingleton<WishlistServices>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
