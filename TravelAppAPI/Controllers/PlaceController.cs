@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelAppAPI.Model;
 using TravelAppAPI.Sevices;
@@ -8,17 +8,19 @@ namespace TravelAppAPI.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PlaceController(PlaceServices placeServices) : ControllerBase
     {
         private readonly PlaceServices _placeServices = placeServices;
-
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<Place>> Get()
         {
 
             return Ok(await _placeServices.GetAsync());
         }
         [HttpGet("{id:length(24)}", Name = "GetPlace")]
+        [AllowAnonymous]
         public async Task<ActionResult<Place>> Get(string id)
         {
             var place = await _placeServices.GetAsync(id);

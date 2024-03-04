@@ -17,6 +17,22 @@ namespace TravelAppAPI.Sevices
         {
             return await _users.Find(user => true).ToListAsync();
         }
+        public async Task<string> CheckExist(string userName, string password)
+        {
+            return (await _users.Find<User>(user => user.Username == userName && user.Password == CreateMD5(password)).FirstOrDefaultAsync())?.Id ?? String.Empty;
+           
+        }
+        public static string CreateMD5(string input)
+        {
+            // Use input string to calculate MD5 hash
+            using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
+            {
+                byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+                return Convert.ToHexString(hashBytes);
+            }
+        }
         public async Task<User> GetAsync(string id)
         {
             return await _users.Find<User>(user => user.Id == id).FirstOrDefaultAsync();
