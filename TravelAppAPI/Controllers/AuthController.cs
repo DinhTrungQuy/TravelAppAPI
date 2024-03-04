@@ -39,24 +39,24 @@ namespace TravelAppAPI.Controllers
         public async Task<ActionResult<User>> Login(LoginDto user, IOptions<JwtSettings> settings)
         {
             var userId = await _authServices.CheckExist(user.Username, user.Password);
+            var ExpriredTime = DateTime.Now.AddHours(1);
             if (!String.IsNullOrEmpty(userId))
             {
-                var issuer =settings.Value.Issuer;
+                var issuer = settings.Value.Issuer;
                 var audience = settings.Value.Audience;
                 var key = Encoding.ASCII.GetBytes(settings.Value.Key);
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
-                    Subject = new ClaimsIdentity(new[]
-                    {
-                new Claim("Id", userId),
-                new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Sub, user.Username),
-            }),
-                    Expires = DateTime.UtcNow.AddMinutes(5),
+                    Subject = new ClaimsIdentity(new[] {
+                                new Claim("Id", userId),
+                                new Claim("Username", user.Username),
+                                new Claim("Username", user.Username),
+                            }),
+                    Expires = ExpriredTime,
                     Issuer = issuer,
                     Audience = audience,
-                    SigningCredentials = new SigningCredentials
-                    (new SymmetricSecurityKey(key),
-                    SecurityAlgorithms.HmacSha512Signature)
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                            SecurityAlgorithms.HmacSha512Signature)
                 };
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var token = tokenHandler.CreateToken(tokenDescriptor);
