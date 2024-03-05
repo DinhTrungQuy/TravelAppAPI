@@ -19,6 +19,7 @@ builder.Services.Configure<JwtSettings>(
 builder.Services.AddSingleton<PlaceServices>();
 builder.Services.AddSingleton<AuthServices>();
 builder.Services.AddSingleton<WishlistServices>();
+builder.Services.AddSingleton<BookingServices>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

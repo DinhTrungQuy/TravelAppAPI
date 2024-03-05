@@ -30,9 +30,9 @@ namespace TravelAppAPI.Sevices
         {
             await _bookings.ReplaceOneAsync(booking => booking.Id == id, bookingIn);
         }
-        public async Task RemoveAsync(Booking bookingIn)
+        public async Task RemoveAsync(String id)
         {
-            await _bookings.DeleteOneAsync(booking => booking.Id == bookingIn.Id);
+            await _bookings.DeleteOneAsync(booking => booking.Id == id);
         }
 
     }
