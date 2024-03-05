@@ -22,7 +22,7 @@ namespace TravelAppAPI.Sevices
             return await _bookings.Find<Booking>(booking => booking.Id == id).FirstOrDefaultAsync();
         }
         public async Task<Booking> CreateAsync(Booking booking)
-        {
+        { 
             await _bookings.InsertOneAsync(booking);
             return booking;
         }
