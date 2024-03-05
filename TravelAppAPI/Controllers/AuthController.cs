@@ -61,6 +61,13 @@ namespace TravelAppAPI.Controllers
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var stringToken = tokenHandler.WriteToken(token);
+    
+                CookieOptions option = new CookieOptions();
+                option.Expires = ExpriredTime;
+                option.HttpOnly = true;
+                option.Secure = true;
+                option.SameSite = SameSiteMode.None;
+                Response.Cookies.Append("Token", stringToken, option);
                 return Ok(stringToken);
             }
             return Ok();
