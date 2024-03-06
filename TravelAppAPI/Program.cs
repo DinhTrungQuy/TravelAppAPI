@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Middleware;
 using System.Text;
 using TravelAppAPI.Models;
 using TravelAppAPI.Sevices;
@@ -53,6 +54,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+app.UseJWTInHeader();
 
 app.UseAuthentication();
 app.UseAuthorization();

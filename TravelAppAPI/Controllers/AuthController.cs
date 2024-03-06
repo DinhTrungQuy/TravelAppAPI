@@ -18,7 +18,6 @@ namespace TravelAppAPI.Controllers
     {
         private readonly AuthServices _authServices = authServices;
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ActionResult<User>> Get()
         {
             return Ok(await _authServices.GetAsync());
@@ -49,7 +48,6 @@ namespace TravelAppAPI.Controllers
                 {
                     Subject = new ClaimsIdentity(new[] {
                                 new Claim("Id", userId),
-                                new Claim("Username", user.Username),
                                 new Claim("Username", user.Username),
                             }),
                     Expires = ExpriredTime,

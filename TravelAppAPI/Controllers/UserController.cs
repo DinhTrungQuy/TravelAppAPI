@@ -13,7 +13,7 @@ namespace TravelAppAPI.Controllers
         //[HttpGet]
         //public async Task<ActionResult<User>> Get()
         //{
-           
+            
         //}
     }
 }

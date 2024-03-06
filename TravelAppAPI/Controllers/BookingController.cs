@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TravelAppAPI.Models;
 using TravelAppAPI.Sevices;
@@ -7,6 +8,7 @@ namespace TravelAppAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BookingController(BookingServices bookingServices) : ControllerBase
     {
         private readonly BookingServices _bookingServices = bookingServices;
