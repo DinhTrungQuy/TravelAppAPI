@@ -19,7 +19,9 @@ namespace TravelAppAPI.Sevices
         }
         public async Task<User> GetAsync(string id)
         {
-            return await _users.Find<User>(user => user.Id == id).FirstOrDefaultAsync();
+            User user = await _users.Find<User>(user => user.Id == id).FirstOrDefaultAsync();
+            user.Password = String.Empty;
+            return user;
         }
 
 

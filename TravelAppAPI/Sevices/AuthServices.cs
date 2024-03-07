@@ -22,7 +22,11 @@ namespace TravelAppAPI.Sevices
             return (await _users.Find<User>(user => user.Username == userName && user.Password == CreateMD5(password)).FirstOrDefaultAsync())?.Id ?? String.Empty;
            
         }
-        public static string CreateMD5(string input)
+        public async Task<bool> CheckExistUser(string username)
+        {
+            return await _users.Find<User>(user => user.Username == username).AnyAsync();
+        }
+        public string CreateMD5(string input)
         {
             // Use input string to calculate MD5 hash
             byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);

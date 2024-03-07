@@ -34,6 +34,7 @@ namespace TravelAppAPI.Controllers
         }
 
         [HttpPost]
+        [Route("login")]
         [AllowAnonymous]
         public async Task<ActionResult<User>> Login(LoginDto user, IOptions<JwtSettings> settings)
         {
@@ -59,17 +60,33 @@ namespace TravelAppAPI.Controllers
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var stringToken = tokenHandler.WriteToken(token);
-    
-                CookieOptions option = new CookieOptions();
-                option.Expires = ExpriredTime;
-                option.HttpOnly = true;
-                option.Secure = true;
-                option.SameSite = SameSiteMode.None;
+
+                CookieOptions option = new()
+                {
+                    Expires = ExpriredTime,
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None
+                };
                 Response.Cookies.Append("Token", stringToken, option);
                 return Ok(stringToken);
             }
             return Ok();
         }
+        [HttpPost]
+        [Route("register")]
+        [AllowAnonymous]
+        public async Task<ActionResult<User>> Register(User user)
+        {
+            if (await _authServices.CheckExistUser(user.Username))
+            {
+                return BadRequest("Username is already exist");
+            }
+            user.Password = _authServices.CreateMD5(user.Password);
+            await _authServices.CreateAsync(user);
+            return Ok();
+        }
+
         [HttpPut("{id:length(24)}")]
         public async Task<IActionResult> Update(string id, User userIn)
         {

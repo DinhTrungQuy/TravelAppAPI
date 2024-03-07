@@ -5,14 +5,9 @@ using MongoDB.Bson.IO;
 
 namespace Middleware
 {
-    public class JWTInHeaderMiddleware
+    public class JWTInHeaderMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
-
-        public JWTInHeaderMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
+        private readonly RequestDelegate _next = next;
 
         public async Task InvokeAsync(HttpContext context)
         {
