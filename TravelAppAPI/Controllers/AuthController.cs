@@ -71,7 +71,7 @@ namespace TravelAppAPI.Controllers
                 Response.Cookies.Append("Token", stringToken, option);
                 return Ok(stringToken);
             }
-            return Ok();
+            return Unauthorized();
         }
         [HttpPost]
         [Route("register")]

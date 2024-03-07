@@ -7,20 +7,25 @@ namespace TravelAppAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class WishlistController(WishlistServices wishlistServices) : ControllerBase
+    public class WishlistController(WishlistServices wishlistServices, UserServices userServices) : ControllerBase
     {
+        
+        private readonly UserServices _userServices = userServices;
         private readonly WishlistServices _wishlistServices = wishlistServices;
         [HttpGet]
         public async Task<ActionResult<Wishlist>> Get()
         {
             return Ok(await _wishlistServices.GetAsync());
         }
-        [HttpGet("{id:length(24)}", Name = "GetWishlist")]
-        public async Task<ActionResult<Wishlist>> Get(string id)
+        [HttpGet("{placeId:length(24)}", Name = "GetWishlist")]
+        public async Task<ActionResult<Wishlist>> Get(string placeId)
         {
-            var wishlist = await _wishlistServices.GetAsync(id);
+            var request = HttpContext.Request;
+            string userId = _userServices.DecodeJwtToken(request);
+            var wishlist = await _wishlistServices.CheckExist(userId, placeId);
             if (wishlist == null)
             {
+
                 return NotFound();
             }
             return Ok(wishlist);

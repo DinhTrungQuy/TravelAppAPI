@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using System.IdentityModel.Tokens.Jwt;
 using TravelAppAPI.Models;
 
 namespace TravelAppAPI.Sevices
@@ -23,6 +24,17 @@ namespace TravelAppAPI.Sevices
             user.Password = String.Empty;
             return user;
         }
+        public string DecodeJwtToken(HttpRequest request)
+        {
+            String authHeader = request.Headers.Authorization!;
+            authHeader = authHeader.Replace("Bearer ", String.Empty);
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(authHeader);
+            var tokenS = handler.ReadToken(authHeader) as JwtSecurityToken;
+            string userId = tokenS!.Claims.First(claim => claim.Type == "Id").Value;
+            return userId;
+        }
+
 
 
     }

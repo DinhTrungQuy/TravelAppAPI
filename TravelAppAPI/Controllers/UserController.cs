@@ -12,15 +12,15 @@ namespace TravelAppAPI.Controllers
     public class UserController(UserServices userServices) : ControllerBase
     {
         private readonly UserServices _userServices = userServices;
+
+  
+
         [HttpGet]
         public async Task<ActionResult<User>> Get()
+
         {
-            String authHeader = HttpContext.Request.Headers.Authorization!;
-            authHeader = authHeader.Replace("Bearer ", String.Empty);
-            var handler = new JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadToken(authHeader);
-            var tokenS = handler.ReadToken(authHeader) as JwtSecurityToken;
-            string userId = tokenS!.Claims.First(claim => claim.Type == "Id").Value;
+            var request = HttpContext.Request;
+            string userId = _userServices.DecodeJwtToken(request);
             return Ok(await _userServices.GetAsync(userId));
 
         }
