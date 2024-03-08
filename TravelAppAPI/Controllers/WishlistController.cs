@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelAppAPI.Models;
 using TravelAppAPI.Sevices;
@@ -7,6 +7,7 @@ namespace TravelAppAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class WishlistController(WishlistServices wishlistServices, UserServices userServices) : ControllerBase
     {
         
@@ -25,7 +26,6 @@ namespace TravelAppAPI.Controllers
             var wishlist = await _wishlistServices.CheckExist(userId, placeId);
             if (wishlist == null)
             {
-
                 return NotFound();
             }
             return Ok(wishlist);
@@ -47,15 +47,17 @@ namespace TravelAppAPI.Controllers
             await _wishlistServices.UpdateAsync(id, wishlistIn);
             return NoContent();
         }
-        [HttpDelete("{id:length(24)}")]
-        public async Task<IActionResult> Delete(string id)
+        [HttpDelete("{placeId:length(24)}")]
+        public async Task<IActionResult> Delete(string placeId)
         {
-            var wishlist = _wishlistServices.GetAsync(id);
-            if (wishlist == null)
-            {
-                return NotFound();
-            }
-            await _wishlistServices.RemoveAsync(id);
+            var request = HttpContext.Request;
+            string userId = _userServices.DecodeJwtToken(request);
+            //var wishlist = 
+            //if (wishlist == null)
+            //{
+            //    return NotFound();
+            //}
+            await _wishlistServices.RemoveAsync(userId, placeId);
             return NoContent();
         }
     }

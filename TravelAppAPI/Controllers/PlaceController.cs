@@ -8,7 +8,7 @@ namespace TravelAppAPI.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class PlaceController(PlaceServices placeServices) : ControllerBase
     {
         private readonly PlaceServices _placeServices = placeServices;
@@ -38,7 +38,7 @@ namespace TravelAppAPI.Controllers
         }
 
 
-       
+
         [HttpPut("{id:length(24)}")]
         public async Task<IActionResult> Update(string id, Place placeIn)
         {

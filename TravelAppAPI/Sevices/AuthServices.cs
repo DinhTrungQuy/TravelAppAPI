@@ -17,10 +17,11 @@ namespace TravelAppAPI.Sevices
         {
             return await _users.Find(user => true).ToListAsync();
         }
-        public async Task<string> CheckExist(string userName, string password)
+        public async Task<LoginInfo> CheckExist(string userName, string password)
         {
-            return (await _users.Find<User>(user => user.Username == userName && user.Password == CreateMD5(password)).FirstOrDefaultAsync())?.Id ?? String.Empty;
-           
+            var user = await _users.Find<User>(user => user.Username == userName && user.Password == CreateMD5(password)).FirstOrDefaultAsync();
+            return new LoginInfo() { UserId = user.Id, Username = user.Username, Role = user.Role };
+
         }
         public async Task<bool> CheckExistUser(string username)
         {

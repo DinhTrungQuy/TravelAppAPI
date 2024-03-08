@@ -27,12 +27,28 @@ namespace TravelAppAPI.Controllers
             }
             return booking;
         }
+       
         [HttpPost]
         public async Task<ActionResult<Booking>> Create(Booking booking)
         {
             await _bookingServices.CreateAsync(booking);
             return CreatedAtRoute("GetBooking", new { id = booking.Id.ToString() }, booking);
         }
+        [Route("Checkin/{id:length(24)}")]
+        [HttpPost]
+        public async Task<ActionResult<Booking>> Checkin(string id)
+        {
+            Booking booking = await _bookingServices.GetAsync(id);
+            if (booking == null)
+            {
+                return NotFound();
+            }
+            booking.Status = 1;
+            booking.CheckInTime = DateTime.Now;
+            await _bookingServices.UpdateAsync(id, booking);
+            return NoContent();
+        }
+    
         [HttpPut("{id:length(24)}")]
         public async Task<IActionResult> Update(string id, Booking bookingIn)
         {
@@ -41,6 +57,7 @@ namespace TravelAppAPI.Controllers
             {
                 return NotFound();
             }
+
             await _bookingServices.UpdateAsync(id, bookingIn);
             return NoContent();
         }

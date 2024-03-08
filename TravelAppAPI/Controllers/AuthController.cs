@@ -13,15 +13,15 @@ namespace TravelAppAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class AuthController(AuthServices authServices) : ControllerBase
     {
         private readonly AuthServices _authServices = authServices;
         [HttpGet]
+        [Authorize(Roles ="Admin")]
         public async Task<ActionResult<User>> Get()
         {
             return Ok(await _authServices.GetAsync());
-        }
+        }       
         [HttpGet("{id:length(24)}", Name = "GetUser")]
         public async Task<ActionResult<User>> Get(string id)
         {
@@ -33,14 +33,14 @@ namespace TravelAppAPI.Controllers
             return Ok(user);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("login")]
-        [AllowAnonymous]
         public async Task<ActionResult<User>> Login(LoginDto user, IOptions<JwtSettings> settings)
         {
-            var userId = await _authServices.CheckExist(user.Username, user.Password);
+            var userLogin = await _authServices.CheckExist(user.Username, user.Password);
             var ExpriredTime = DateTime.Now.AddHours(1);
-            if (!String.IsNullOrEmpty(userId))
+            if (!String.IsNullOrEmpty(userLogin.UserId))
             {
                 var issuer = settings.Value.Issuer;
                 var audience = settings.Value.Audience;
@@ -48,8 +48,9 @@ namespace TravelAppAPI.Controllers
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new[] {
-                                new Claim("Id", userId),
-                                new Claim("Username", user.Username),
+                                new Claim("Id", userLogin.UserId),
+                                new Claim("Username", userLogin.Username),
+                                new Claim("role", userLogin.Role )
                             }),
                     Expires = ExpriredTime,
                     Issuer = issuer,
@@ -88,6 +89,7 @@ namespace TravelAppAPI.Controllers
         }
 
         [HttpPut("{id:length(24)}")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Update(string id, User userIn)
         {
             var user = _authServices.GetAsync(id);
@@ -99,6 +101,7 @@ namespace TravelAppAPI.Controllers
             return NoContent();
         }
         [HttpDelete("{id:length(24)}")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             var user = _authServices.GetAsync(id);

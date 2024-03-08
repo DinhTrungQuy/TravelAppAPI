@@ -23,7 +23,7 @@ namespace TravelAppAPI.Sevices
         }
         public async Task<Wishlist> CheckExist(string userId, string placeId)
         {
-            return await _wishlist.Find<Wishlist>(wishlist => wishlist.Id == userId && wishlist.PlaceId == placeId).FirstOrDefaultAsync();
+            return await _wishlist.Find<Wishlist>(wishlist => wishlist.UserId == userId && wishlist.PlaceId == placeId).FirstOrDefaultAsync();
         }
         public async Task<Wishlist> CreateAsync(Wishlist wishlist)
         {
@@ -38,9 +38,9 @@ namespace TravelAppAPI.Sevices
         {
             await _wishlist.DeleteOneAsync(wishlist => wishlist.Id == wishlistIn.Id);
         }
-        public async Task RemoveAsync(string id)
+        public async Task RemoveAsync(string userId, string placeId)
         {
-            await _wishlist.DeleteOneAsync(wishlist => wishlist.Id == id);
+            await _wishlist.DeleteOneAsync(wishlist => wishlist.UserId == userId && wishlist.PlaceId == placeId);
         }
     }
 }
