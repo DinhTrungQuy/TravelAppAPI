@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Middleware;
+using System.Reflection.Metadata;
 using System.Text;
 using TravelAppAPI.Models;
 using TravelAppAPI.Sevices;
@@ -42,6 +43,15 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true
     };
 });
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "MyCors",
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:5173",
+                                              "https://quyddt.speak.vn").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+                      });
+});
 
 //builder.Services.AddAuthorization(options =>
 //{
@@ -62,6 +72,7 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseJWTInHeader();
+app.UseCors("MyCors");
 
 app.UseAuthentication();
 app.UseAuthorization();

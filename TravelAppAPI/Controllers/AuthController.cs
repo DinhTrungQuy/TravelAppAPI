@@ -77,6 +77,47 @@ namespace TravelAppAPI.Controllers
             }
             return Unauthorized();
         }
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("adminlogin")]
+        public async Task<ActionResult<User>> AdminLogin(LoginDto user, IOptions<JwtSettings> settings)
+        {
+            var userLogin = await _authServices.CheckExist(user.Username, user.Password);
+            var ExpriredTime = DateTime.Now.AddHours(1);
+            if (!String.IsNullOrEmpty(userLogin.UserId) && userLogin.Role == "Admin")
+            {
+                var issuer = settings.Value.Issuer;
+                var audience = settings.Value.Audience;
+                var key = Encoding.ASCII.GetBytes(settings.Value.Key);
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new[] {
+                                new Claim("Id", userLogin.UserId),
+                                new Claim("Username", userLogin.Username),
+                                new Claim("role", userLogin.Role )
+                            }),
+                    Expires = ExpriredTime,
+                    Issuer = issuer,
+                    Audience = audience,
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                            SecurityAlgorithms.HmacSha512Signature)
+                };
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                var stringToken = tokenHandler.WriteToken(token);
+
+                CookieOptions option = new()
+                {
+                    Expires = ExpriredTime,
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None
+                };
+                Response.Cookies.Append("Token", stringToken, option);
+                return Ok(stringToken);
+            }
+            return Unauthorized();
+        }
 
         [HttpPost]
         [Route("logout")]

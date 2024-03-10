@@ -20,6 +20,10 @@ namespace TravelAppAPI.Sevices
         public async Task<LoginInfo> CheckExist(string userName, string password)
         {
             var user = await _users.Find<User>(user => user.Username == userName && user.Password == CreateMD5(password)).FirstOrDefaultAsync();
+            if (user == null)
+            {
+                return new LoginInfo();
+            }
             return new LoginInfo() { UserId = user.Id, Username = user.Username, Role = user.Role };
 
         }
