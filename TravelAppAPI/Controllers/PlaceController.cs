@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelAppAPI.Model;
+using TravelAppAPI.Models;
+using TravelAppAPI.Models.Config;
+using TravelAppAPI.Models.Dto;
 using TravelAppAPI.Sevices;
 
 namespace TravelAppAPI.Controllers
@@ -9,9 +13,10 @@ namespace TravelAppAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "Admin")]
-    public class PlaceController(PlaceServices placeServices) : ControllerBase
+    public class PlaceController(PlaceServices placeServices, FileServices fileServices) : ControllerBase
     {
         private readonly PlaceServices _placeServices = placeServices;
+        private readonly FileServices _fileServices = fileServices;
         [HttpGet]
         [AllowAnonymous]
         public async Task<ActionResult<Place>> Get()
@@ -31,14 +36,16 @@ namespace TravelAppAPI.Controllers
             return Ok(place);
         }
         [HttpPost]
-        public async Task<ActionResult<Place>> Post(Place place)
+        public async Task<ActionResult<Place>> Post(PlaceDto place)
         {
-            await _placeServices.CreateAsync(place);
-            return CreatedAtRoute("GetPlace", new { id = place.Id.ToString() }, place);
+            var mapper = MapperConfig.Initialize();
+            var placeModel = mapper.Map<Place>(place);
+            await _placeServices.CreateAsync(placeModel);
+            var filePath = await _fileServices.SavePlaceFile(place.Image!, placeModel.Id);
+            placeModel.ImageUrl = filePath;
+            await _placeServices.UpdateAsync(placeModel.Id, placeModel);
+            return Ok(placeModel);
         }
-
-
-
         [HttpPut("{id:length(24)}")]
         public async Task<IActionResult> Update(string id, Place placeIn)
         {

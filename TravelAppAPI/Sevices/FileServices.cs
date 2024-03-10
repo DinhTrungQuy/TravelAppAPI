@@ -1,0 +1,27 @@
+﻿namespace TravelAppAPI.Sevices
+{
+    public class FileServices
+    {
+
+        public async Task<string> SavePlaceFile(IFormFile file, string fileId)
+        {
+            if (file == null || file.Length == 0)
+                return "Invalid file";
+            var filePath = Path.Combine("D:\\Publish\\IIS\\quydt.speak.vn_Images\\places", fileId + Path.GetExtension(file.FileName));
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+            return filePath;
+
+        }
+        //public void DeleteFile(string fileName)
+        //{
+        //    var filePath = Path.Combine(_folder, fileName);
+        //    if (File.Exists(filePath))
+        //    {
+        //        File.Delete(filePath);
+        //    }
+        //}
+    }
+}
