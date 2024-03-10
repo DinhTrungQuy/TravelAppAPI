@@ -1,9 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using MongoDB.Bson.IO;
-
-namespace Middleware
+﻿namespace Middleware
 {
     public class JWTInHeaderMiddleware(RequestDelegate next)
     {
@@ -15,14 +10,13 @@ namespace Middleware
             var token = context.Request.Cookies[authenticationCookieName];
             if (token != null)
             {
-
                 context.Request.Headers.Append("Authorization", "Bearer " + token);
             }
 
             await _next(context);
         }
 
-        
+
     }
     public static class JWTInHeaderMiddlewareExtensions
     {

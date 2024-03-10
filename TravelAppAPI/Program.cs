@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Middleware;
 using System.Text;
@@ -42,11 +43,11 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("Admin", policy => policy.RequireClaim("Role", "Admin"));
-    options.AddPolicy("User", policy => policy.RequireClaim("Role", "User"));
-});
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("Admin", policy => policy.RequireClaim("Role", "Admin"));
+//    options.AddPolicy("User", policy => policy.RequireClaim("Role", "User"));
+//});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

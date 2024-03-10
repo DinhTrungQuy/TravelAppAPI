@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.AspNetCore.Identity;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace TravelAppAPI.Models
@@ -8,7 +9,7 @@ namespace TravelAppAPI.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id  { get; set; } = String.Empty;
+        public string Id { get; set; } = string.Empty;
         [BsonElement("Username")]
         public string Username { get; set; } = String.Empty;
         [BsonElement("Password")]

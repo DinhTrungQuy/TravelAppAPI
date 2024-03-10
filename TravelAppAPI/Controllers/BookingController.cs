@@ -9,9 +9,10 @@ namespace TravelAppAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class BookingController(BookingServices bookingServices) : ControllerBase
+    public class BookingController(BookingServices bookingServices, UserServices userServices) : ControllerBase
     {
         private readonly BookingServices _bookingServices = bookingServices;
+        private readonly UserServices _userServices = userServices;
         [HttpGet]
         public async Task<ActionResult<List<Booking>>> Get()
         {
@@ -27,12 +28,15 @@ namespace TravelAppAPI.Controllers
             }
             return booking;
         }
-       
+
         [HttpPost]
         public async Task<ActionResult<Booking>> Create(Booking booking)
         {
-            await _bookingServices.CreateAsync(booking);
-            return CreatedAtRoute("GetBooking", new { id = booking.Id.ToString() }, booking);
+            var request = HttpContext.Request;
+            string userId = _userServices.DecodeJwtToken(request);
+            Booking createBooking = await _bookingServices.CreateAsync(booking);
+            createBooking.UserId = userId;
+            return Ok(createBooking);
         }
         [Route("Checkin/{id:length(24)}")]
         [HttpPost]
@@ -48,7 +52,35 @@ namespace TravelAppAPI.Controllers
             await _bookingServices.UpdateAsync(id, booking);
             return NoContent();
         }
-    
+        [Route("Checkout/{id:length(24)}")]
+        [HttpPost]
+        public async Task<ActionResult<Booking>> Checkout(string id)
+        {
+            Booking booking = await _bookingServices.GetAsync(id);
+            if (booking == null)
+            {
+                return NotFound();
+            }
+            booking.Status = 2;
+            booking.CheckOutTime = DateTime.Now;
+            await _bookingServices.UpdateAsync(id, booking);
+            return NoContent();
+        }
+        [Route("Cancel/{id:length(24)}")]
+        [HttpPost]
+        public async Task<ActionResult<Booking>> Cancel(string id)
+        {
+            Booking booking = await _bookingServices.GetAsync(id);
+            if (booking == null)
+            {
+                return NotFound();
+            }
+            booking.Status = 3;
+            booking.CheckInTime = DateTime.Now;
+            await _bookingServices.UpdateAsync(id, booking);
+            return NoContent();
+        }
+
         [HttpPut("{id:length(24)}")]
         public async Task<IActionResult> Update(string id, Booking bookingIn)
         {

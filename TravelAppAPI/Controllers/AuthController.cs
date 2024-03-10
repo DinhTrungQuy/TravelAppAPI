@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -16,12 +18,13 @@ namespace TravelAppAPI.Controllers
     public class AuthController(AuthServices authServices) : ControllerBase
     {
         private readonly AuthServices _authServices = authServices;
+
         [HttpGet]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<User>> Get()
         {
             return Ok(await _authServices.GetAsync());
-        }       
+        }
         [HttpGet("{id:length(24)}", Name = "GetUser")]
         public async Task<ActionResult<User>> Get(string id)
         {
@@ -74,6 +77,15 @@ namespace TravelAppAPI.Controllers
             }
             return Unauthorized();
         }
+
+        [HttpPost]
+        [Route("logout")]
+        public async Task<ActionResult> Logout()
+        {
+            await AuthenticationHttpContextExtensions.SignOutAsync(HttpContext);
+            return Ok();
+        }
+
         [HttpPost]
         [Route("register")]
         [AllowAnonymous]
