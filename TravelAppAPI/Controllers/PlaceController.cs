@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using TravelAppAPI.Model;
 using TravelAppAPI.Models;
 using TravelAppAPI.Models.Config;
@@ -60,11 +61,13 @@ namespace TravelAppAPI.Controllers
         [HttpDelete("{id:length(24)}")]
         public async Task<IActionResult> Delete(string id)
         {
-            var place = _placeServices.GetAsync(id);
+
+            Place place = await _placeServices.GetAsync(id);
             if (place == null)
             {
                 return NotFound();
             }
+            _fileServices.DeleteFile(place.ImageUrl);
             await _placeServices.RemoveAsync(id);
             return NoContent();
         }
