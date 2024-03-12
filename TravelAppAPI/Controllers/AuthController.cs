@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using TravelAppAPI.Models;
+using TravelAppAPI.Models.Config;
 using TravelAppAPI.Models.Dto;
 using TravelAppAPI.Sevices;
 
@@ -130,15 +131,18 @@ namespace TravelAppAPI.Controllers
         [HttpPost]
         [Route("register")]
         [AllowAnonymous]
-        public async Task<ActionResult<User>> Register(User user)
+        public async Task<ActionResult<User>> Register(RegisterDto user)
         {
+            var mapper = MapperConfig.Initialize();
+            
             if (await _authServices.CheckExistUser(user.Username))
             {
                 return BadRequest("Username is already exist");
             }
-            user.Password = _authServices.CreateMD5(user.Password);
-            await _authServices.CreateAsync(user);
-            return Ok();
+            var userModel = mapper.Map<User>(user);
+            userModel.Password = _authServices.CreateMD5(userModel.Password);
+            await _authServices.CreateAsync(userModel);
+            return Ok(userModel);
         }
 
         [HttpPut("{id:length(24)}")]

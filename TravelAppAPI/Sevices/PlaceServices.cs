@@ -22,6 +22,12 @@ namespace TravelAppAPI.Sevices
             return place;
         }
         public async Task UpdateAsync(string id, Place placeIn) => await _places.ReplaceOneAsync(place => place.Id == id, placeIn);
+        public async Task UpdateRating(string placeId, double ratingValue)
+        {
+            var place = await GetAsync(placeId);
+            place.Rating = ratingValue.ToString();
+            await UpdateAsync(placeId, place);
+        }
         public async Task RemoveAsync(Place placeIn) => await _places.DeleteOneAsync(place => place.Id == placeIn.Id);
         public async Task RemoveAsync(string id) => await _places.DeleteOneAsync(place => place.Id == id);
     }

@@ -25,6 +25,7 @@ builder.Services.AddSingleton<WishlistServices>();
 builder.Services.AddSingleton<BookingServices>();
 builder.Services.AddSingleton<UserServices>();
 builder.Services.AddSingleton<FileServices>();
+builder.Services.AddSingleton<RatingServices>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
