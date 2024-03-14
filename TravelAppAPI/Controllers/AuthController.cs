@@ -133,7 +133,7 @@ namespace TravelAppAPI.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<User>> Register(RegisterDto user)
         {
-            var mapper = MapperConfig.Initialize();
+            var mapper = MapperConfig.Initialize(); 
             
             if (await _authServices.CheckExistUser(user.Username))
             {

@@ -10,9 +10,15 @@ namespace TravelAppAPI.Models
         public string Id { get; set; } = string.Empty;
         [BsonElement("Date")]
         public DateTime Date { get; set; } = DateTime.Today;
-
+        [BsonElement("Profit")]
         public int Profit { get; set; } = 0;
+        [BsonElement("TotalUsers")]        
         public int TotalUsers { get; set; } = 0;
+        [BsonElement("TotalPlaces")]
+        public int TotalPlaces { get; set; } = 0;
+        [BsonElement("TotalOrders")]
+        public int TotalOrders { get; set; } = 0;
+
 
 
 

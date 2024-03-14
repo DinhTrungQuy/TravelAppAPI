@@ -33,6 +33,9 @@ namespace TravelAppAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Wishlist>> Post(Wishlist wishlist)
         {
+            var request = HttpContext.Request;
+            string userId = _userServices.DecodeJwtToken(request);
+            wishlist.UserId = userId;
             await _wishlistServices.CreateAsync(wishlist);
             return CreatedAtRoute("GetWishlist", new { id = wishlist.Id.ToString() }, wishlist);
         }

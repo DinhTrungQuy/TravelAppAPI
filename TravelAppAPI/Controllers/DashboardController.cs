@@ -1,0 +1,28 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using TravelAppAPI.Models;
+using TravelAppAPI.Sevices;
+
+namespace TravelAppAPI.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class DashboardController : ControllerBase
+    {
+        private readonly DashboardServices _dashboardServices;
+        public DashboardController(DashboardServices dashboardServices)
+        {
+            _dashboardServices = dashboardServices;
+        }
+        [HttpGet]
+        public async Task<ActionResult<Dashboard>> Get()
+        {
+            var profit = _dashboardServices.GetProfit();
+            var place = await _dashboardServices.GetTotalPlaces();
+            var user = await _dashboardServices.GetTotalUsers();
+            await _dashboardServices.GetDashboard();
+            return await _dashboardServices.UpdateDashboard(new Dashboard { Profit = profit, TotalPlaces = place, TotalUsers = user });
+        }
+      
+    }
+}

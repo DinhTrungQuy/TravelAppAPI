@@ -34,8 +34,8 @@ namespace TravelAppAPI.Controllers
         {
             var request = HttpContext.Request;
             string userId = _userServices.DecodeJwtToken(request);
+            booking.UserId = userId;
             Booking createBooking = await _bookingServices.CreateAsync(booking);
-            createBooking.UserId = userId;
             return Ok(createBooking);
         }
         [Route("Checkin/{id:length(24)}")]
