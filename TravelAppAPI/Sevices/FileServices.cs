@@ -27,8 +27,17 @@
             return filePath;
 
         }
-        public void DeleteFile(string filePath)
+        public void DeletePlaceFile(string path)
         {
+            var filePath = Path.Combine("D:\\Publish\\IIS\\quydt.speak.vn_Images\\places", path);
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+        }
+        public void DeleteUserFile(string path)
+        {
+            var filePath = Path.Combine("D:\\Publish\\IIS\\quydt.speak.vn_Images\\users", path);
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);

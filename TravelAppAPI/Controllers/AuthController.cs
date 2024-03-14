@@ -146,7 +146,7 @@ namespace TravelAppAPI.Controllers
         }
 
         [HttpPut("{id:length(24)}")]
-        [Authorize(Policy = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(string id, User userIn)
         {
             var user = _authServices.GetAsync(id);
@@ -158,7 +158,7 @@ namespace TravelAppAPI.Controllers
             return NoContent();
         }
         [HttpDelete("{id:length(24)}")]
-        [Authorize(Policy = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             var user = _authServices.GetAsync(id);

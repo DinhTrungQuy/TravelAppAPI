@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Middleware;
 using System.Reflection.Metadata;
 using System.Text;
+using TravelAppAPI.Infrastructure;
 using TravelAppAPI.Models;
 using TravelAppAPI.Sevices;
 
@@ -15,6 +16,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 builder.Services.Configure<TravelAppDatabaseSettings>(
     builder.Configuration.GetSection("TravelAppDatabase"));
 builder.Services.Configure<JwtSettings>(
@@ -55,11 +58,7 @@ builder.Services.AddCors(options =>
                       });
 });
 
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.AddPolicy("Admin", policy => policy.RequireClaim("Role", "Admin"));
-//    options.AddPolicy("User", policy => policy.RequireClaim("Role", "User"));
-//});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -72,6 +71,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseJWTInHeader();
 app.UseCors("MyCors");

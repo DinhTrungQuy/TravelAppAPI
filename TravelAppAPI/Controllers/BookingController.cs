@@ -75,7 +75,7 @@ namespace TravelAppAPI.Controllers
             {
                 return NotFound();
             }
-            booking.Status = 3;
+            booking.Status = 4;
             booking.CheckInTime = DateTime.Now;
             await _bookingServices.UpdateAsync(id, booking);
             return NoContent();

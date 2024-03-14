@@ -37,13 +37,13 @@ namespace TravelAppAPI.Controllers
             return Ok(place);
         }
         [HttpPost]
-        public async Task<ActionResult<Place>> Post(PlaceDto place)
+        public async Task<ActionResult<Place>> Post([FromForm] PlaceDto place)
         {
             var mapper = MapperConfig.Initialize();
             var placeModel = mapper.Map<Place>(place);
             await _placeServices.CreateAsync(placeModel);
             var filePath = await _fileServices.SavePlaceFile(place.Image!, placeModel.Id);
-            placeModel.ImageUrl = filePath;
+            placeModel.ImageUrl = "https://quydt.speak.vn/"+ placeModel.Id + Path.GetExtension(filePath);
             await _placeServices.UpdateAsync(placeModel.Id, placeModel);
             return Ok(placeModel);
         }
@@ -67,7 +67,7 @@ namespace TravelAppAPI.Controllers
             {
                 return NotFound();
             }
-            _fileServices.DeleteFile(place.ImageUrl);
+            _fileServices.DeletePlaceFile(place.ImageUrl);
             await _placeServices.RemoveAsync(id);
             return NoContent();
         }

@@ -8,11 +8,12 @@ namespace TravelAppAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize]
-    public class RatingController(RatingServices ratingServices, PlaceServices placeServices) : ControllerBase
+    public class RatingController(RatingServices ratingServices, PlaceServices placeServices, BookingServices bookingServices) : ControllerBase
     {
 
         private readonly RatingServices _ratingServices = ratingServices;
         private readonly PlaceServices _placeServices = placeServices;
+        private readonly BookingServices _bookingServices = bookingServices;
 
 
         [HttpGet]
@@ -34,18 +35,15 @@ namespace TravelAppAPI.Controllers
 
             return Ok(rateValue.ToString());
         }
-        [HttpPost]
-        public async Task<ActionResult<Rating>> PostRating(Rating rating)
+        [HttpPost("{bookingId:length(24)}")]
+        public async Task<ActionResult<Rating>> PostRating(Rating rating,string bookingId)
         {
-
             var ratingList = await _ratingServices.GetByPlaceIdAsync(rating.PlaceId);
-            if (ratingList.Any(r => r.UserId == rating.UserId))
-            {
-                return BadRequest("User already rated this place");
-            }
+            var booking = await _bookingServices.GetAsync(bookingId);
+            booking.Status = 3;
             ratingList.Add(rating);
             var rateValue = Math.Round(ratingList.Average(r => r.RatingValue), 1);
-
+            await _bookingServices.UpdateAsync(bookingId,booking);
             await _ratingServices.InsertAsync(rating);
             await _placeServices.UpdateRating(rating.PlaceId, rateValue);
             return Ok(rating);

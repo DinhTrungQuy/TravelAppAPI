@@ -2,12 +2,10 @@
 {
     public class PlaceDto
     {
-        public string Id { get; set; } = String.Empty;
+    
         public int DurationDays { get; set; } = 0;
         public string Name { get; set; } = String.Empty;
         public string Description { get; set; } = String.Empty;
-        public string ImageUrl { get; set; } = String.Empty;
-        public string Rating { get; set; } = String.Empty;
         public string Location { get; set; } = String.Empty;
         public int Price { get; set; } = 0;
         public bool Popular { get; set; } = false;
