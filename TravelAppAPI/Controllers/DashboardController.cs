@@ -8,14 +8,10 @@ namespace TravelAppAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DashboardController : ControllerBase
+    public class DashboardController(DashboardServices dashboardServices) : ControllerBase
     {
-        private readonly DashboardServices _dashboardServices;
-        public DashboardController(DashboardServices dashboardServices)
-        {
-            _dashboardServices = dashboardServices;
-            
-        }
+        private readonly DashboardServices _dashboardServices = dashboardServices;
+
         [HttpGet]
         public async Task<ActionResult<Dashboard>> Get()
         {

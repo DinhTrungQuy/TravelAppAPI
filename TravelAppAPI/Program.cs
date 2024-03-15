@@ -30,6 +30,7 @@ builder.Services.AddSingleton<UserServices>();
 builder.Services.AddSingleton<FileServices>();
 builder.Services.AddSingleton<RatingServices>();
 builder.Services.AddSingleton<DashboardServices>();
+builder.Services.AddSingleton<CacheServices>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

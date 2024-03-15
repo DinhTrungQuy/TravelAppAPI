@@ -16,9 +16,11 @@ namespace TravelAppAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(AuthServices authServices) : ControllerBase
+    public class AuthController(AuthServices authServices, CacheServices cacheServices) : ControllerBase
     {
         private readonly AuthServices _authServices = authServices;
+        private readonly CacheServices _cacheServices = cacheServices;  
+
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
@@ -74,6 +76,8 @@ namespace TravelAppAPI.Controllers
                     SameSite = SameSiteMode.None
                 };
                 Response.Cookies.Append("Token", stringToken, option);
+
+                _cacheServices.SetData<RedisCache>("access_token", stringToken, ExpriredTime);
                 return Ok(stringToken);
             }
             return Unauthorized();
@@ -119,7 +123,6 @@ namespace TravelAppAPI.Controllers
             }
             return Unauthorized();
         }
-
         [HttpPost]
         [Route("logout")]
         public async Task<ActionResult> Logout()
