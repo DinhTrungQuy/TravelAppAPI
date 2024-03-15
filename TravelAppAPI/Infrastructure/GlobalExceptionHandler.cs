@@ -18,7 +18,6 @@ namespace TravelAppAPI.Infrastructure
                 Status = StatusCodes.Status500InternalServerError,
                 Detail = $"API Error {exception.Message}",
                 Instance = "API"
-
             };
             var response = JsonSerializer.Serialize(details);
             httpContext.Response.ContentType = "application/json";

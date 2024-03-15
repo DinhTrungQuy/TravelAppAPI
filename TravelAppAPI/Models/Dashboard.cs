@@ -16,8 +16,8 @@ namespace TravelAppAPI.Models
         public int TotalUsers { get; set; } = 0;
         [BsonElement("TotalPlaces")]
         public int TotalPlaces { get; set; } = 0;
-        [BsonElement("TotalOrders")]
-        public int TotalOrders { get; set; } = 0;
+        [BsonElement("TotalBookings")]
+        public int TotalBookings { get; set; } = 0;
 
 
 

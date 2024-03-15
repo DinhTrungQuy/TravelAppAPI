@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Eventing.Reader;
 using TravelAppAPI.Models;
 using TravelAppAPI.Sevices;
 
@@ -13,6 +14,7 @@ namespace TravelAppAPI.Controllers
         public DashboardController(DashboardServices dashboardServices)
         {
             _dashboardServices = dashboardServices;
+            
         }
         [HttpGet]
         public async Task<ActionResult<Dashboard>> Get()
@@ -20,8 +22,10 @@ namespace TravelAppAPI.Controllers
             var profit = _dashboardServices.GetProfit();
             var place = await _dashboardServices.GetTotalPlaces();
             var user = await _dashboardServices.GetTotalUsers();
-            await _dashboardServices.GetDashboard();
-            return await _dashboardServices.UpdateDashboard(new Dashboard { Profit = profit, TotalPlaces = place, TotalUsers = user });
+            var booking = await _dashboardServices.GetTotalBookings();
+            var dashboardId = await _dashboardServices.GetDashboard();
+
+            return await _dashboardServices.UpdateDashboard(new Dashboard {Id = dashboardId, Profit = profit, TotalPlaces = place, TotalUsers = user, TotalBookings = booking });
         }
       
     }

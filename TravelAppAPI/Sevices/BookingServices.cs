@@ -29,6 +29,7 @@ namespace TravelAppAPI.Sevices
         public async Task UpdateAsync(string id, Booking bookingIn)
         {
             await _bookings.ReplaceOneAsync(booking => booking.Id == id, bookingIn);
+
         }
         public async Task RemoveAsync(String id)
         {

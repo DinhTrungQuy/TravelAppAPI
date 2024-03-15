@@ -21,16 +21,17 @@ namespace TravelAppAPI.Sevices
             _place = database.GetCollection<Place>(settings.Value.PlacesCollectionName);
             _booking = database.GetCollection<Booking>(settings.Value.BookingsCollectionName);
         }
-        public async Task<Dashboard> GetDashboard()
+        public async Task<string> GetDashboard()
         {
             var dashboard = await _dashboard.Find(d => true).FirstOrDefaultAsync();
             if (dashboard == null)
             {
                 dashboard = new Dashboard();
-                await _dashboard.InsertOneAsync(dashboard);
+                 await _dashboard.InsertOneAsync(dashboard);
             }
-            return dashboard;
+            return dashboard.Id;
         }
+        public async Task CreateAsync(Dashboard dashboard) => await _dashboard.InsertOneAsync(dashboard);
         public async Task<Dashboard> UpdateDashboard(Dashboard dashboard)
         {
             await _dashboard.ReplaceOneAsync(d => d.Id == dashboard.Id, dashboard);
@@ -43,6 +44,10 @@ namespace TravelAppAPI.Sevices
         public async Task<int> GetTotalPlaces()
         {
             return (int)await _place.CountDocumentsAsync(d => true);
+        }
+        public async Task<int> GetTotalBookings()
+        {
+            return (int)await _booking.CountDocumentsAsync(d => true);
         }
         public int GetProfit()
         {
