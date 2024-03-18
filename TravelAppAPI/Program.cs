@@ -77,7 +77,7 @@ app.UseSwaggerUI();
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseJWTInHeader();
-app.UseCheckBlacklistJwtToken();
+app.UseCheckJwtToken();
 app.UseCors("MyCors");
 
 app.UseAuthentication();

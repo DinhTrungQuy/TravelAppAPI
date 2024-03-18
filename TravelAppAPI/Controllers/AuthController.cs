@@ -127,7 +127,7 @@ namespace TravelAppAPI.Controllers
         }
         [HttpPost]
         [Route("logout")]
-        public async Task<ActionResult> Logout()
+        public ActionResult Logout()
         {
             var token = Request.Headers.Authorization.ToString();
             token = token.Replace("Bearer ", "");
@@ -139,7 +139,7 @@ namespace TravelAppAPI.Controllers
                 Secure = true,
                 SameSite = SameSiteMode.None
             };
-            Response.Cookies.Append("Token","", option);
+            Response.Cookies.Append("Token", "", option);
             return Ok();
         }
 
