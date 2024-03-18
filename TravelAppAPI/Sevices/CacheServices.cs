@@ -6,12 +6,12 @@ namespace TravelAppAPI.Sevices
 {
     public class CacheServices : ICacheService
     {
-        private IDatabase _db;
+        private readonly IDatabase _db;
         public CacheServices()
         {
             _db = ConfigureRedis();
         }
-        private IDatabase ConfigureRedis()
+        private static IDatabase ConfigureRedis()
         {
             ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("127.0.0.1:6379");
             return redis.GetDatabase();
@@ -21,7 +21,7 @@ namespace TravelAppAPI.Sevices
             var value = _db.StringGet(key);
             if (!string.IsNullOrEmpty(value))
             {
-                return JsonConvert.DeserializeObject<T>(value);
+                return JsonConvert.DeserializeObject<T>(value!)!;
             }
             return default!;
         }

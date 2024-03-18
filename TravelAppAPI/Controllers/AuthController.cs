@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using RTools_NTS.Util;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -23,7 +24,7 @@ namespace TravelAppAPI.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult<User>> Get()
         {
             return Ok(await _authServices.GetAsync());
@@ -77,7 +78,7 @@ namespace TravelAppAPI.Controllers
                 };
                 Response.Cookies.Append("Token", stringToken, option);
 
-                _cacheServices.SetData<RedisCache>("access_token", stringToken, ExpriredTime);
+                _cacheServices.SetData(stringToken, "true", ExpriredTime);
                 return Ok(stringToken);
             }
             return Unauthorized();
@@ -119,6 +120,7 @@ namespace TravelAppAPI.Controllers
                     SameSite = SameSiteMode.None
                 };
                 Response.Cookies.Append("Token", stringToken, option);
+                _cacheServices.SetData(stringToken, "true", ExpriredTime);
                 return Ok(stringToken);
             }
             return Unauthorized();
@@ -127,7 +129,17 @@ namespace TravelAppAPI.Controllers
         [Route("logout")]
         public async Task<ActionResult> Logout()
         {
-            await AuthenticationHttpContextExtensions.SignOutAsync(HttpContext);
+            var token = Request.Headers.Authorization.ToString();
+            token = token.Replace("Bearer ", "");
+            _cacheServices.RemoveData(token);
+            CookieOptions option = new()
+            {
+                Expires = DateTime.Now,
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None
+            };
+            Response.Cookies.Append("Token","", option);
             return Ok();
         }
 

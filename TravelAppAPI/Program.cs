@@ -5,6 +5,7 @@ using Middleware;
 using System.Reflection.Metadata;
 using System.Text;
 using TravelAppAPI.Infrastructure;
+using TravelAppAPI.Middleware;
 using TravelAppAPI.Models;
 using TravelAppAPI.Sevices;
 
@@ -76,6 +77,7 @@ app.UseSwaggerUI();
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseJWTInHeader();
+app.UseCheckBlacklistJwtToken();
 app.UseCors("MyCors");
 
 app.UseAuthentication();
