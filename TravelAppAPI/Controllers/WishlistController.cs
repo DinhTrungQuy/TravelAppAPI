@@ -16,7 +16,9 @@ namespace TravelAppAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<Wishlist>> Get()
         {
-            return Ok(await _wishlistServices.GetAsync());
+            var request = HttpContext.Request;
+            string userId = _userServices.DecodeJwtToken(request);
+            return Ok(await _wishlistServices.GetAsync(userId));
         }
         [HttpGet("{placeId:length(24)}", Name = "GetWishlist")]
         public async Task<ActionResult<Wishlist>> Get(string placeId)

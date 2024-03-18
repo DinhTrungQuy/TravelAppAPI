@@ -17,9 +17,9 @@ namespace TravelAppAPI.Sevices
         {
             return await _wishlist.Find(wishlist => true).ToListAsync();
         }
-        public async Task<Wishlist> GetAsync(string id)
+        public async Task<Wishlist> GetAsync(string userId)
         {
-            return await _wishlist.Find<Wishlist>(wishlist => wishlist.Id == id).FirstOrDefaultAsync();
+            return await _wishlist.Find<Wishlist>(wishlist => wishlist.UserId == userId).FirstOrDefaultAsync();
         }
         public async Task<Wishlist> CheckExist(string userId, string placeId)
         {
