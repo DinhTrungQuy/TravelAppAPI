@@ -23,7 +23,7 @@ namespace TravelAppAPI.Sevices
         }
         public async Task<string> GetDashboard()
         {
-            var dashboard = await _dashboard.Find(d => true).FirstOrDefaultAsync();
+            var dashboard = await _dashboard.Find(d => d.Date == DateTime.Today).FirstOrDefaultAsync();
             if (dashboard == null)
             {
                 dashboard = new Dashboard();

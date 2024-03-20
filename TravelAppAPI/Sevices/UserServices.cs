@@ -24,6 +24,11 @@ namespace TravelAppAPI.Sevices
             user.Password = String.Empty;
             return user;
         }
+        public async Task<string> GetUserPassword(string username)
+        {
+            User user = await _users.Find<User>(user => user.Username == username).FirstOrDefaultAsync();
+            return user.Password;
+        }
         public string DecodeJwtToken(HttpRequest request)
         {
             String authHeader = request.Headers.Authorization!;
@@ -33,6 +38,18 @@ namespace TravelAppAPI.Sevices
             var tokenS = handler.ReadToken(authHeader) as JwtSecurityToken;
             string userId = tokenS!.Claims.First(claim => claim.Type == "Id").Value;
             return userId;
+        }
+        public async Task UpdateAsync(string id, User userIn)
+        {
+            await _users.ReplaceOneAsync(user => user.Id == id, userIn);
+        }
+        public async Task RemoveAsync(User userIn)
+        {
+            await _users.DeleteOneAsync(user => user.Id == userIn.Id);
+        }
+        public async Task RemoveAsync(string id)
+        {
+            await _users.DeleteOneAsync(user => user.Id == id);
         }
 
 

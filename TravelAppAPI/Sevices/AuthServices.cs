@@ -48,17 +48,6 @@ namespace TravelAppAPI.Sevices
             await _users.InsertOneAsync(user);
             return user;
         }
-        public async Task UpdateAsync(string id, User userIn)
-        {
-            await _users.ReplaceOneAsync(user => user.Id == id, userIn);
-        }
-        public async Task RemoveAsync(User userIn)
-        {
-            await _users.DeleteOneAsync(user => user.Id == userIn.Id);
-        }
-        public async Task RemoveAsync(string id)
-        {
-            await _users.DeleteOneAsync(user => user.Id == id);
-        }
+      
     }
 }

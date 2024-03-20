@@ -12,6 +12,7 @@ namespace TravelAppAPI.Models.Config
             {
                 cfg.CreateMap<Place, PlaceDto>().ReverseMap();
                 cfg.CreateMap<RegisterDto, User>().ReverseMap();
+                cfg.CreateMap<User, UserDto>().ReverseMap();
             });
             var mapper = new Mapper(config);
             return mapper;

@@ -43,19 +43,24 @@ namespace TravelAppAPI.Controllers
             var placeModel = mapper.Map<Place>(place);
             await _placeServices.CreateAsync(placeModel);
             var filePath = await _fileServices.SavePlaceFile(place.Image!, placeModel.Id);
-            placeModel.ImageUrl = "https://quydt.speak.vn/"+ placeModel.Id + Path.GetExtension(filePath);
+            placeModel.ImageUrl = "https://quydt.speak.vn/images/places/"+ placeModel.Id + Path.GetExtension(filePath);
             await _placeServices.UpdateAsync(placeModel.Id, placeModel);
             return Ok(placeModel);
         }
         [HttpPut("{id:length(24)}")]
-        public async Task<IActionResult> Update(string id, Place placeIn)
+        public async Task<IActionResult> Update(string id, [FromForm] PlaceDto placeIn)
         {
+            var mapper = MapperConfig.Initialize();
             var place = _placeServices.GetAsync(id);
             if (place == null)
             {
                 return NotFound();
             }
-            await _placeServices.UpdateAsync(id, placeIn);
+            var placeModel = mapper.Map<Place>(placeIn);
+            placeModel.Id = id;
+            var filePath = await _fileServices.SavePlaceFile(placeIn.Image!, placeModel.Id);
+            placeModel.ImageUrl = "https://quydt.speak.vn/images/places/" + placeModel.Id + Path.GetExtension(filePath);
+            await _placeServices.UpdateAsync(id, placeModel);
             return NoContent();
         }
         [HttpDelete("{id:length(24)}")]

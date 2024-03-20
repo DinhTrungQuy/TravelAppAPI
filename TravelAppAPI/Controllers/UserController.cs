@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.IdentityModel.Tokens.Jwt;
+using TravelAppAPI.Model;
 using TravelAppAPI.Models;
+using TravelAppAPI.Models.Config;
+using TravelAppAPI.Models.Dto;
 using TravelAppAPI.Sevices;
 
 namespace TravelAppAPI.Controllers
@@ -9,39 +13,56 @@ namespace TravelAppAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class UserController(UserServices userServices,FileServices fileServices, AuthServices authServices) : ControllerBase
+    public class UserController(UserServices userServices, FileServices fileServices, AuthServices authServices) : ControllerBase
     {
         private readonly UserServices _userServices = userServices;
         private readonly FileServices _fileServices = fileServices;
         private readonly AuthServices _authServices = authServices;
-
-
-  
-
         [HttpGet]
         public async Task<ActionResult<User>> Get()
-
         {
             var request = HttpContext.Request;
             string userId = _userServices.DecodeJwtToken(request);
             return Ok(await _userServices.GetAsync(userId));
 
         }
-        [HttpPost]
-        [Route("ImageUpload")]
-        public async Task<IActionResult> ImageUpload(IFormFile file)
+        [HttpGet("{userId:length(24)}")]
+        public async Task<ActionResult<User>> Get(string userId)
         {
-            var request = HttpContext.Request;
-            string userId = _userServices.DecodeJwtToken(request);
-            var filePath = await _fileServices.SaveUserFile(file, userId);
-            var user = await _userServices.GetAsync(userId);
+            return Ok(await _userServices.GetAsync(userId));
+
+        }
+        [HttpPut("{id:length(24)}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Update(string id, UserDto userIn)
+        {
+            var map = MapperConfig.Initialize();
+            var user = _authServices.GetAsync(id);
             if (user == null)
             {
-                return BadRequest();
+                return NotFound();
             }
-            user.ImageUrl = "https://quydt.speak.vn/images/user" + userId + Path.GetExtension(filePath);
-            await _authServices.UpdateAsync(userId, user);
-            return Ok(user);
+            var userModel = map.Map<User>(userIn);
+            userModel.Id = id;
+            
+            var filePath = await _fileServices.SaveUserFile(userIn.Image!, userModel.Id);
+            userModel.ImageUrl = "https://quydt.speak.vn/images/users/" + userModel.Id + Path.GetExtension(filePath);
+            var password = await _userServices.GetUserPassword(userModel.Username);
+            userModel.Password = password;
+            await _userServices.UpdateAsync(id, userModel);
+            return NoContent();
+        }
+        [HttpDelete("{id:length(24)}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var user = _authServices.GetAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            await _userServices.RemoveAsync(id);
+            return NoContent();
         }
     }
 }

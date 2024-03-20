@@ -20,7 +20,6 @@ namespace TravelAppAPI.Controllers
             var user = await _dashboardServices.GetTotalUsers();
             var booking = await _dashboardServices.GetTotalBookings();
             var dashboardId = await _dashboardServices.GetDashboard();
-
             return await _dashboardServices.UpdateDashboard(new Dashboard {Id = dashboardId, Profit = profit, TotalPlaces = place, TotalUsers = user, TotalBookings = booking });
         }
       

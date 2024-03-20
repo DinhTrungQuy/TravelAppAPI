@@ -160,29 +160,6 @@ namespace TravelAppAPI.Controllers
             return Ok(userModel);
         }
 
-        [HttpPut("{id:length(24)}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Update(string id, User userIn)
-        {
-            var user = _authServices.GetAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            await _authServices.UpdateAsync(id, userIn);
-            return NoContent();
-        }
-        [HttpDelete("{id:length(24)}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete(string id)
-        {
-            var user = _authServices.GetAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            await _authServices.RemoveAsync(id);
-            return NoContent();
-        }
+        
     }
 }
