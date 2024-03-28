@@ -1,4 +1,6 @@
-﻿namespace TravelAppAPI.Models
+﻿using StackExchange.Redis;
+
+namespace TravelAppAPI.Models
 {
     public class LoginInfo
     {

@@ -14,10 +14,12 @@ namespace TravelAppAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "Admin")]
-    public class PlaceController(PlaceServices placeServices, FileServices fileServices) : ControllerBase
+    public class PlaceController(PlaceServices placeServices, FileServices fileServices,BookingServices bookingServices, WishlistServices wishlistServices) : ControllerBase
     {
         private readonly PlaceServices _placeServices = placeServices;
         private readonly FileServices _fileServices = fileServices;
+        private readonly BookingServices _bookingServices = bookingServices;
+        private readonly WishlistServices _wishlistServices = wishlistServices;
         [HttpGet]
         [AllowAnonymous]
         public async Task<ActionResult<Place>> Get()
@@ -44,6 +46,7 @@ namespace TravelAppAPI.Controllers
             await _placeServices.CreateAsync(placeModel);
             var filePath = await _fileServices.SavePlaceFile(place.Image!, placeModel.Id);
             placeModel.ImageUrl = "https://quydt.speak.vn/images/places/"+ placeModel.Id + Path.GetExtension(filePath);
+            placeModel.Rating = "0";
             await _placeServices.UpdateAsync(placeModel.Id, placeModel);
             return Ok(placeModel);
         }
@@ -51,13 +54,14 @@ namespace TravelAppAPI.Controllers
         public async Task<IActionResult> Update(string id, [FromForm] PlaceDto placeIn)
         {
             var mapper = MapperConfig.Initialize();
-            var place = _placeServices.GetAsync(id);
+            var place = await _placeServices.GetAsync(id);
             if (place == null)
             {
                 return NotFound();
             }
             var placeModel = mapper.Map<Place>(placeIn);
             placeModel.Id = id;
+            placeModel.Rating = place.Rating;
             var filePath = await _fileServices.SavePlaceFile(placeIn.Image!, placeModel.Id);
             placeModel.ImageUrl = "https://quydt.speak.vn/images/places/" + placeModel.Id + Path.GetExtension(filePath);
             await _placeServices.UpdateAsync(id, placeModel);
@@ -74,6 +78,8 @@ namespace TravelAppAPI.Controllers
             }
             _fileServices.DeletePlaceFile(place.ImageUrl);
             await _placeServices.RemoveAsync(id);
+            await _bookingServices.RemoveByPlaceIdAsync(id);
+            await _wishlistServices.RemoveByPlaceIdAsync(id);
             return NoContent();
         }
     }

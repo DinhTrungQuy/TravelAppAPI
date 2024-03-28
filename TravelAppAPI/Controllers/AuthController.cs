@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using RTools_NTS.Util;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -20,7 +17,7 @@ namespace TravelAppAPI.Controllers
     public class AuthController(AuthServices authServices, CacheServices cacheServices) : ControllerBase
     {
         private readonly AuthServices _authServices = authServices;
-        private readonly CacheServices _cacheServices = cacheServices;  
+        private readonly CacheServices _cacheServices = cacheServices;
 
 
         [HttpGet]
@@ -148,8 +145,8 @@ namespace TravelAppAPI.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<User>> Register(RegisterDto user)
         {
-            var mapper = MapperConfig.Initialize(); 
-            
+            var mapper = MapperConfig.Initialize();
+
             if (await _authServices.CheckExistUser(user.Username))
             {
                 return BadRequest("Username is already exist");
@@ -160,6 +157,6 @@ namespace TravelAppAPI.Controllers
             return Ok(userModel);
         }
 
-        
+
     }
 }

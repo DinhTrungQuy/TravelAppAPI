@@ -42,5 +42,9 @@ namespace TravelAppAPI.Sevices
         {
             await _wishlist.DeleteOneAsync(wishlist => wishlist.UserId == userId && wishlist.PlaceId == placeId);
         }
+        public async Task RemoveByPlaceIdAsync(string placeId)
+        {
+            await _wishlist.DeleteManyAsync(wishlist => wishlist.PlaceId == placeId);
+        }
     }
 }

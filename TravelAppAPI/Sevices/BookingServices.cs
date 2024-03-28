@@ -35,6 +35,10 @@ namespace TravelAppAPI.Sevices
         {
             await _bookings.DeleteOneAsync(booking => booking.Id == id);
         }
+        public async Task RemoveByPlaceIdAsync(string placeId)
+        {
+            await _bookings.DeleteManyAsync(booking => booking.PlaceId == placeId);
+        }
 
     }
 }
