@@ -57,7 +57,7 @@ builder.Services.AddCors(options =>
                       policy =>
                       {
                           policy.WithOrigins("http://localhost:5173",
-                                              "https://quyddt.speak.vn").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+                                              "https://quydt.speak.vn","https://travel.speak.vn").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
                       });
 });
 

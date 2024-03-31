@@ -44,6 +44,7 @@ namespace TravelAppAPI.Controllers
         {
             var userLogin = await _authServices.CheckExist(user.Username, user.Password);
             var ExpriredTime = DateTime.Now.AddHours(1);
+            //var ExpriredTime = DateTime.Now.AddSeconds(10);
             if (!String.IsNullOrEmpty(userLogin.UserId))
             {
                 var issuer = settings.Value.Issuer;

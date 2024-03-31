@@ -63,7 +63,16 @@ namespace TravelAppAPI.Controllers
             placeModel.Id = id;
             placeModel.Rating = place.Rating;
             var filePath = await _fileServices.SavePlaceFile(placeIn.Image!, placeModel.Id);
-            placeModel.ImageUrl = "https://quydt.speak.vn/images/places/" + placeModel.Id + Path.GetExtension(filePath);
+            if (filePath == "Invalid file")
+            {
+                return BadRequest("Invalid file");
+
+            }
+            else
+            {
+                placeModel.ImageUrl = "https://quydt.speak.vn/images/places/" + placeModel.Id + Path.GetExtension(filePath);
+            }
+                
             await _placeServices.UpdateAsync(id, placeModel);
             return NoContent();
         }

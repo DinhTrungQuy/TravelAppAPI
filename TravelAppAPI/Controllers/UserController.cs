@@ -37,7 +37,7 @@ namespace TravelAppAPI.Controllers
         public async Task<IActionResult> Update(string id, UserDto userIn)
         {
             var map = MapperConfig.Initialize();
-            var user = _authServices.GetAsync(id);
+            User user = await _authServices.GetAsync(id);
             if (user == null)
             {
                 return NotFound();
@@ -46,7 +46,14 @@ namespace TravelAppAPI.Controllers
             userModel.Id = id;
             
             var filePath = await _fileServices.SaveUserFile(userIn.Image!, userModel.Id);
-            userModel.ImageUrl = "https://quydt.speak.vn/images/users/" + userModel.Id + Path.GetExtension(filePath);
+            if (filePath == "Invalid file")
+            {
+                return BadRequest("Invalid file");
+
+            } else
+            {
+                userModel.ImageUrl = "https://quydt.speak.vn/images/users/" + userModel.Id + Path.GetExtension(filePath);
+            }
             var password = await _userServices.GetUserPassword(userModel.Username);
             userModel.Password = password;
             await _userServices.UpdateAsync(id, userModel);

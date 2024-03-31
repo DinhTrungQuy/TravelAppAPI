@@ -1,4 +1,6 @@
-﻿namespace TravelAppAPI.Sevices
+﻿using TravelAppAPI.Infrastructure;
+
+namespace TravelAppAPI.Sevices
 {
     public class FileServices
     {
@@ -10,7 +12,21 @@
             var filePath = Path.Combine("D:\\Publish\\IIS\\quydt.speak.vn_Images\\places", fileId + Path.GetExtension(file.FileName));
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
-                await file.CopyToAsync(fileStream);
+                byte[] byteArray;
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+                    byteArray = memoryStream.ToArray();
+                }
+                string imageFormat = ImageDetection.GetImageFormat(byteArray).ToString();
+                if (imageFormat == "UNKNOWN")
+                {
+                    return "Invalid file";
+                }
+                else
+                {
+                    await file.CopyToAsync(fileStream);
+                }
             }
             return filePath;
 
@@ -22,7 +38,21 @@
             var filePath = Path.Combine("D:\\Publish\\IIS\\quydt.speak.vn_Images\\users", fileId + Path.GetExtension(file.FileName));
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
-                await file.CopyToAsync(fileStream);
+                byte[] byteArray;
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+                    byteArray = memoryStream.ToArray();
+                }
+                string imageFormat = ImageDetection.GetImageFormat(byteArray).ToString();
+                if (imageFormat == "UNKNOWN")
+                {
+                    return "Invalid file";
+                }
+                else
+                {
+                    await file.CopyToAsync(fileStream);
+                }
             }
             return filePath;
 
