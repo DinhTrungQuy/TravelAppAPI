@@ -18,7 +18,7 @@ namespace TravelAppAPI.Middleware
                 {
                     context.Request.Headers.Authorization = "";
                     //context.Request.Headers.Authorization.FirstOrDefault()?.Replace(token, "");
-                    var strToken = context.Request.Headers.Authorization.FirstOrDefault();
+                    //var strToken = context.Request.Headers.Authorization.FirstOrDefault();
                 }
             }
             await _next(context);
